@@ -43,4 +43,35 @@ def fast_MED(S, T, MED={}):  #From lecture notes
 
 
 def fast_align_MED(S, T, MED={}):
-   pass
+    if (S, T) in MED:
+        return MED[(S, T)]
+        
+    if not S:
+        align = ('-' * len(T), T)
+        MED[(S, T)] = align
+        return align
+    if not T:
+        align = (S, '-' * len(S))
+        
+        MED[(S, T)] = align
+        return align
+        
+    if S[0] == T[0]:
+        
+        AS, AT = fast_align_MED(S[1:], T[1:], MED)
+        align = (S[0] + AS, T[0] + AT)
+        MED[(S, T)] = align
+        return align
+        
+    else:
+        insert = fast_MED(S, T[1:])
+        delete = fast_MED(S[1:], T)
+        if insert <= delete:
+            AS, AT = fast_align_MED(S, T[1:], MED)
+            align = ('-' + AS, T[0] + AT)
+        else:
+            AS, AT = fast_align_MED(S[1:], T, MED)
+            align = (S[0] + AS, '-' + AT)
+        MED[(S, T)] = align
+        return align
+
